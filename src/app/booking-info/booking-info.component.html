@@ -1,0 +1,23 @@
+<mat-grid-list cols="2" rowHeight="2:2">
+  <mat-grid-tile>
+      <mat-list>
+          <mat-nav-list>{{jsonData.room}}</mat-nav-list>
+          <mat-nav-list>
+            {{clock}}
+          </mat-nav-list>
+      </mat-list>
+   
+  </mat-grid-tile>
+  <mat-grid-tile>
+      <mat-list>
+          <mat-nav-list> <p>{{isAvailable}}</p> </mat-nav-list> <!--title-->
+          <mat-nav-list> <p>{{until}}</p> </mat-nav-list>
+          <mat-nav-list> <p> Next meeting:</p> </mat-nav-list> <!--title-->
+          <mat-nav-list>
+            <p>{{nextMeeting.name}}</p>
+            {{nextMeetingTime}}
+          </mat-nav-list>
+      </mat-list>
+  </mat-grid-tile>
+</mat-grid-list>
+
