@@ -8,17 +8,20 @@ interface WebAppAdapter {
 
 declare var Android: WebAppAdapter;
 
-interface IMeeting {
-  title: string;
-  startDate: string;
-  endDate: string;
-}
+// interface IMeeting {
+//   title: string;
+//   startDate: string;
+//   endDate: string;
+// }
 
-export class Room {
-  roomName: string;
-  currentMeeting: IMeeting;
-  nextMeeting: IMeeting;
-}
+// export class Room {
+//   constructor(obj){
+//     obj && Object.assign(this, obj)
+//   }
+//   roomName: string;
+//   currentMeeting?: IMeeting;
+//   nextMeeting?: IMeeting;
+// }
 
 @Component({
   selector: 'booking-info',
@@ -27,10 +30,12 @@ export class Room {
 })
 
 export class BookingInfoComponent implements OnInit {
-  jsonData: Room;
+  jsonData: Object;
   constructor(private httpService: HttpClient) {
-    this.jsonData = {} as Room;
+    this.jsonData = {} as Object;
   }
+  roomName = ""
+  currentMeetingName = "";
   isAvailable = "";
   until = "";
   nextMeeting = "";
@@ -38,47 +43,61 @@ export class BookingInfoComponent implements OnInit {
   clock;
 
   ngOnInit() {
+    var json = {"currentMeeting":{"endDate":"2018-04-18T15:00:00.000+02:00","startDate":"2018-04-18T14:00:00.000+02:00","title":"Recurring Important Meeting"},"lastUpdated":"2018-04-18T12:26:03.949Z","nextMeeting":{"endDate":"2018-04-25T15:00:00.000+02:00","startDate":"2018-04-25T14:00:00.000+02:00","title":"Recurring Important Meeting"},"roomId":"docker.com_jbfd49h727i9p1umat92sm4vkg@group.calendar.google.com","roomName":"Fake Pinata"}
+    var str = JSON.stringify(json);
     
-    // this.httpService.get("../assets/data.json")
-    // .subscribe(
-    //   data => {
-    //     this.jsonData = data as Room;
-    //     this.RoomAvailability(this.jsonData);
-    //   }
-    // )
+    this.RoomAvailability(JSON.parse(str));
+    // this.jsonData = obj;
+    
+    // this.RoomAvailability(JSON.parse(Android.getData()))
 
-    var obj = JSON.parse(Android.getData());
-    console.log(Android.getData());
-    console.log(typeof(obj));
-    console.log(obj);
-    this.jsonData = obj as Room;
-    console.log("this is webview talking! ");
-    console.log(this.jsonData);
-     
     setInterval(() => {
       this.clock = new Date().toLocaleTimeString();
     }, 1000);
   }
 
   RoomAvailability(data) {
-    var startTime = new Date(data.currentMeeting.startDate);
-    var endTime = new Date (data.currentMeeting.endDate);
+    
     var now = new Date();
-    console.log("now");
     console.log(now);
+    this.roomName = data.roomName;
     var options = {hour: "numeric", minute: "numeric"};
-    console.log(endTime, startTime, now)
-    if (startTime < now && endTime > now){
-      // actual meeting is going on
+    // check if there's a current meeting
+    if (data.hasOwnProperty('currentMeeting')){
+      this.currentMeetingName = data.currentMeeting.title;
+      var endTime = new Date (data.currentMeeting.endDate);
       this.isAvailable = "Booked until: ";
-      this.until = endTime.toLocaleTimeString('UTC', options); 
+      this.until = endTime.toLocaleTimeString('GMT', options);
     } else {
       // no meeting
-      this.isAvailable = "Available until: ";
       var nextMeeting = new Date(data.nextMeeting.startDate);
-      this.until = nextMeeting.toLocaleTimeString('UTC', options);
+      console.log(nextMeeting.toLocaleDateString() +"!=" + now.toLocaleDateString());
+      if(nextMeeting.toLocaleDateString() != now.toLocaleDateString()){
+
+        this.isAvailable = "Available";
+        this.until = "";
+      } else {
+        this.isAvailable = "Available until: ";
+        this.until = nextMeeting.toLocaleTimeString('GMT', options);
+      }
     }
-    this.nextMeeting = data.nextMeeting.title;
-    this.nextMeetingTime = new Date(data.nextMeeting.startDate).toLocaleTimeString('UTC', options);
+    if (data.hasOwnProperty('nextMeeting')) {
+      console.log(data.nextMeeting);
+      var nextMeetingStart = new Date(data.nextMeeting.startDate);
+      if (nextMeetingStart.toLocaleDateString() != now.toLocaleDateString()) {
+        this.nextMeeting = "No more meetings today";
+        this.nextMeetingTime = "";
+      } else {
+        this.nextMeeting = data.nextMeeting.title;
+        this.nextMeetingTime = nextMeetingStart.toLocaleTimeString('UTC', options);
+      }
+    } else {
+      this.nextMeeting = "No more meetings today";
+      this.nextMeetingTime = "";
+    }
+
+    // this.nextMeeting = data.nextMeeting.title;
+    // this.nextMeetingTime = new Date(data.nextMeeting.startDate).toLocaleTimeString('UTC', options);
   }
 }
+

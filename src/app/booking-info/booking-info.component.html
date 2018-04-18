@@ -2,7 +2,7 @@
   <mat-grid-tile>
       <mat-list>
           <mat-nav-list>
-            <h1>{{jsonData.roomName}}</h1>
+            <h1>{{roomName}}</h1>
           </mat-nav-list>
           <mat-nav-list>
             <h1>{{clock}}</h1>
@@ -13,12 +13,13 @@
   <mat-grid-tile>
       <mat-list>
         <mat-card>
-             <p>{{isAvailable}}</p> <!--title-->
-            {{until}} 
+            <h2>{{currentMeetingName}}</h2>
+             <p>{{isAvailable}}</p>
+            {{until}}
         </mat-card>
         <mat-card>
             <mat-nav-list> 
-              <p> Next meeting:</p><!--title-->
+              <p> Next meeting:</p>
               <p>{{nextMeeting}}</p>
               {{nextMeetingTime}}
             </mat-nav-list>
