@@ -2,6 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 
+interface WebAppAdapter {
+  getData() : any ;
+}
+
+declare var Android: WebAppAdapter;
+
 interface IMeeting {
   title: string;
   startDate: string;
@@ -32,13 +38,22 @@ export class BookingInfoComponent implements OnInit {
   clock;
 
   ngOnInit() {
-    this.httpService.get("../assets/data.json")
-    .subscribe(
-      data => {
-        this.jsonData = data as Room;
-        this.RoomAvailability(this.jsonData);
-      }
-    )
+    
+    // this.httpService.get("../assets/data.json")
+    // .subscribe(
+    //   data => {
+    //     this.jsonData = data as Room;
+    //     this.RoomAvailability(this.jsonData);
+    //   }
+    // )
+
+    var obj = JSON.parse(Android.getData());
+    console.log(Android.getData());
+    console.log(typeof(obj));
+    console.log(obj);
+    this.jsonData = obj as Room;
+    console.log("this is webview talking! ");
+    console.log(this.jsonData);
      
     setInterval(() => {
       this.clock = new Date().toLocaleTimeString();
@@ -49,6 +64,8 @@ export class BookingInfoComponent implements OnInit {
     var startTime = new Date(data.currentMeeting.startDate);
     var endTime = new Date (data.currentMeeting.endDate);
     var now = new Date();
+    console.log("now");
+    console.log(now);
     var options = {hour: "numeric", minute: "numeric"};
     console.log(endTime, startTime, now)
     if (startTime < now && endTime > now){
