@@ -8,21 +8,6 @@ interface WebAppAdapter {
 
 declare var Android: WebAppAdapter;
 
-// interface IMeeting {
-//   title: string;
-//   startDate: string;
-//   endDate: string;
-// }
-
-// export class Room {
-//   constructor(obj){
-//     obj && Object.assign(this, obj)
-//   }
-//   roomName: string;
-//   currentMeeting?: IMeeting;
-//   nextMeeting?: IMeeting;
-// }
-
 @Component({
   selector: 'booking-info',
   templateUrl: './booking-info.component.html',
@@ -43,13 +28,16 @@ export class BookingInfoComponent implements OnInit {
   clock;
 
   ngOnInit() {
-    var json = {"currentMeeting":{"endDate":"2018-04-18T15:00:00.000+02:00","startDate":"2018-04-18T14:00:00.000+02:00","title":"Recurring Important Meeting"},"lastUpdated":"2018-04-18T12:26:03.949Z","nextMeeting":{"endDate":"2018-04-25T15:00:00.000+02:00","startDate":"2018-04-25T14:00:00.000+02:00","title":"Recurring Important Meeting"},"roomId":"docker.com_jbfd49h727i9p1umat92sm4vkg@group.calendar.google.com","roomName":"Fake Pinata"}
-    var str = JSON.stringify(json);
+    // var json = {"currentMeeting":{"endDate":"2018-04-18T15:00:00.000+02:00","startDate":"2018-04-18T14:00:00.000+02:00","title":"Recurring Important Meeting"},"lastUpdated":"2018-04-18T12:26:03.949Z","nextMeeting":{"endDate":"2018-04-25T15:00:00.000+02:00","startDate":"2018-04-25T14:00:00.000+02:00","title":"Recurring Important Meeting"},"roomId":"docker.com_jbfd49h727i9p1umat92sm4vkg@group.calendar.google.com","roomName":"Fake Pinata"}
+    // var str = JSON.stringify(json);
     
-    this.RoomAvailability(JSON.parse(str));
+    // this.RoomAvailability(JSON.parse(str));
     // this.jsonData = obj;
     
-    // this.RoomAvailability(JSON.parse(Android.getData()))
+    setInterval(() => {
+      this.RoomAvailability(JSON.parse(Android.getData()));
+    }, 3000);
+    
 
     setInterval(() => {
       this.clock = new Date().toLocaleTimeString();
